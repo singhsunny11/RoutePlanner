@@ -70,7 +70,7 @@ public interface Graph extends Iterable<Node> {
 	 * 
 	 * Note: Implementing an overlay graph is part of a bonus exercise, not of the regular project.
 	 * 
-	 * @retun True, iff this is an overlay graph.
+	 * @return True, iff this is an overlay graph.
 	 */
 	boolean isOverlayGraph();
 	

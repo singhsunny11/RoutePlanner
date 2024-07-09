@@ -53,7 +53,7 @@ public class TestCampusMapEx2 extends TestingBase {
 		assertEquals("Number of removed isolated nodes did not match.", 48,
 				numRemovedNodesAfterNodes);
 		assertEquals("Number of non isolated nodes did not match.", 2591,
-				g.numNodes());
+			g.numNodes());
 	}
 
 	@Test(timeout = 3000)

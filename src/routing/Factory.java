@@ -41,8 +41,8 @@ public class Factory {
 					boolean backward_car = parts[4].equals("1");
 					boolean forward_bike = parts[5].equals("1");
 					boolean backward_bike = parts[6].equals("1"); 
-					boolean forward_walk = parts[6].equals("1");
-					boolean backward_walk = parts[7].equals("1");
+					boolean forward_walk = parts[7].equals("1");
+					boolean backward_walk = parts[8].equals("1");
 					//double  length = 1.0;
 
 					Node source = nodes.get(source_id);
@@ -75,9 +75,9 @@ public class Factory {
 	 * @return A node finder algorithm for that graph.
 	 */
 	public static NodeFinder createNodeFinder(Graph g) {
-		// TODO: Implement me.
-		return null;
-	}
+		return new NodeFinderImplementation(g);
+    }
+
 
 	/**
 	 * == BONUS ==
@@ -102,8 +102,9 @@ public class Factory {
 	 * @return A routing algorithm suitable for that graph.
 	 */
 	public static RoutingAlgorithm createRoutingAlgorithm(Graph g) {
+		return new RouteAlgorithmImplementation();
 		// TODO: Implement me.
-		return null;
+		
 	}
 
 }

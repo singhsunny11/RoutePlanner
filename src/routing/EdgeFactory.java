@@ -12,7 +12,7 @@ public class EdgeFactory implements Edge{
     private boolean backwardWalk;
     private double length;
 
-    public EdgeFactory(Node start, Node end, boolean forwardCar, boolean backwardCar,
+   public EdgeFactory(Node start, Node end, boolean forwardCar, boolean backwardCar,
                     boolean forwardBike, boolean backwardBike, boolean forwardWalk, boolean backwardWalk) {
         this.start = start;
         this.end = end;
@@ -24,7 +24,7 @@ public class EdgeFactory implements Edge{
         this.backwardWalk = backwardWalk;
         this.length = Coordinate.distance(start.getCoordinate().getLatitude(), start.getCoordinate().getLongitude(),
                                           end.getCoordinate().getLatitude(), end.getCoordinate().getLongitude());
-    }
+    } 
 
     @Override
     public boolean allowsTravelType(TravelType tt, Direction dir) {

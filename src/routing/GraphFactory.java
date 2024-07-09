@@ -1,5 +1,6 @@
 package routing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -65,22 +66,54 @@ public class GraphFactory implements Graph
 
     @Override
     public int removeIsolatedNodes() {
-        int removedCount = 0;
-        Iterator<Node> nodeIterator = nodes.values().iterator();
-        while (nodeIterator.hasNext()) {
-            Node node = nodeIterator.next();
+        int removed = 0;
+        Iterator<Map.Entry<Long, Node>> it = nodes.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Long, Node> entry = it.next();
+            Node node = entry.getValue();
             if (node.numEdges() == 0) {
-                nodeIterator.remove();
-                removedCount++;
+                it.remove();
+                removed++;
             }
         }
-        return removedCount;
+        return removed;
     }
 
     @Override
     public int removeUntraversableEdges(RoutingAlgorithm ra, TravelType tt) {
-      return 0;
-}
+        int removed = 0;
+    
+    if (ra == null) {
+        throw new IllegalArgumentException("RoutingAlgorithm ra cannot be null");
+    }
+    List<EdgeFactory> edgesCopy = new ArrayList<>(edges);
+    for (EdgeFactory edge : edgesCopy) {
+        boolean canTraverse = canTraverse(edge, ra, tt);
+        if (!canTraverse) {
+            edges.remove(edge);
+            removed++;
+        }
+    }
+    
+    return removed;
+    }
+
+    private boolean canTraverse(EdgeFactory edge, RoutingAlgorithm ra, TravelType tt) {
+        boolean isBidirectional = ra.isBidirectional();
+    
+        // Check if the edge allows travel type in both forward and backward directions
+        boolean canTraverseForward = edge.allowsTravelType(tt, Direction.FORWARD);
+        boolean canTraverseBackward = edge.allowsTravelType(tt, Direction.BACKWARD);
+    
+        // If routing algorithm is bidirectional, retain edges that can be traversed in either direction
+        if (isBidirectional) {
+            return canTraverseForward || canTraverseBackward;
+        } else {
+            // Otherwise, only allow traversal in the forward direction
+            return canTraverseForward;
+        }
+    }
+    
 
     @Override
     public boolean isOverlayGraph() {

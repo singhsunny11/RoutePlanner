@@ -10,6 +10,8 @@ import org.junit.runners.MethodSorters;
 import routing.Graph;
 import routing.Node;
 import routing.Route;
+import routing.RouteLeg;
+import routing.RoutingAlgorithm.NoSuchRouteException;
 import routing.TravelType;
 import routing.tests.TestingBase;
 
@@ -2238,9 +2240,23 @@ public void testSmallRouting127RandomNodes() {
 }
 
 
+@Test(timeout = 3000)
+public void testSmallRouting128RandomNodes() {
+	   Graph g = getGraph();
+    long[] waypoints = { 0l, 5l };
+    List<Node> waypointsList = new ArrayList<>(waypoints.length);
+    for (long id : waypoints)
+    	waypointsList.add(g.getNode(id));
+
+    computeRoute(5l, 0l, TravelType.CAR, false);
+}
+
+
+
+
 @Override
 public String getMapFileName() {
-    return "saarbruecken.osm.nae";
+    return "minimal.nae";
 }
 
 

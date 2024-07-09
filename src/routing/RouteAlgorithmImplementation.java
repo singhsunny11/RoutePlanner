@@ -55,9 +55,7 @@ public class RouteAlgorithmImplementation implements RoutingAlgorithm {
         Map<Node, Node> predecessors = new HashMap<>();
         Map<Node, Double> distances = new HashMap<>();
         Set<Node> visited = new HashSet<>();
-    
-        for (Iterator<Node> it = g.iterator(); it.hasNext(); ) {
-            Node node = it.next();
+        for (Node node : g) {
             distances.put(node, Double.POSITIVE_INFINITY);
         }
         distances.put(startNode, 0.0);
@@ -67,17 +65,24 @@ public class RouteAlgorithmImplementation implements RoutingAlgorithm {
             NodeDistance current = priorityQueue.poll();
             Node currentNode = current.getNode();
     
-            if (!visited.add(currentNode)) continue;
+            if (!visited.add(currentNode)) {
+                continue;
+            }
     
-            if (currentNode.equals(endNode)) break;
+            if (currentNode.equals(endNode)) {
+                break;
+            }
     
             for (Edge edge : currentNode) {
                 Node neighbor = edge.getEnd();
-                if (visited.contains(neighbor)) continue;
+                if (visited.contains(neighbor)) {
+                    continue;
+                }
     
                 boolean canTraverse = tt == TravelType.ANY || edge.allowsTravelType(tt, Direction.FORWARD);
-    
-                if (!canTraverse) continue;
+                if (!canTraverse) {
+                    continue;
+                }
     
                 double newDist = distances.get(currentNode) + edge.getLength();
     
@@ -88,24 +93,25 @@ public class RouteAlgorithmImplementation implements RoutingAlgorithm {
                 }
             }
         }
-    
         if (!predecessors.containsKey(endNode)) {
             throw new NoSuchRouteException("No route found from start to end node.");
         }
     
         List<Node> path = new ArrayList<>();
-        for (Node at = endNode; at != null; at = predecessors.get(at)) {
-            path.add(at);
+        Node currentNode = endNode;
+        while (currentNode != null) {
+            path.add(currentNode);
+            currentNode = predecessors.get(currentNode);
         }
         Collections.reverse(path);
-    
         double totalDistance = distances.get(endNode);
         return new ConcreteRouteLeg(path, totalDistance);
+
     }
 
-    @Override
+   @Override
     public boolean isBidirectional() {
-        return false; // Implement bidirectional logic if needed
-    }
+        return false;
+    } 
 }
 

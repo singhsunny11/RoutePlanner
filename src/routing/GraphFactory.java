@@ -82,36 +82,37 @@ public class GraphFactory implements Graph
     @Override
     public int removeUntraversableEdges(RoutingAlgorithm ra, TravelType tt) {
         int removed = 0;
+        boolean isBidirectional = ra.isBidirectional();
+        List<Edge> edgesToRemove = new ArrayList<>();
+        for (Edge edge : edges) {
+            boolean forwardAllowed = edge.allowsTravelType(tt, Direction.FORWARD);
+            boolean backwardAllowed = edge.allowsTravelType(tt, Direction.BACKWARD);
     
-    if (ra == null) {
-        throw new IllegalArgumentException("RoutingAlgorithm ra cannot be null");
-    }
-    List<EdgeFactory> edgesCopy = new ArrayList<>(edges);
-    for (EdgeFactory edge : edgesCopy) {
-        boolean canTraverse = canTraverse(edge, ra, tt);
-        if (!canTraverse) {
+            if (isBidirectional) {
+                if (!forwardAllowed && !backwardAllowed) {
+                    edgesToRemove.add(edge);
+                }
+            } else {
+                if (!forwardAllowed) {
+                    edgesToRemove.add(edge);
+                }
+            }
+        }
+        for (Edge edge : edgesToRemove) {
             edges.remove(edge);
             removed++;
         }
-    }
-    
-    return removed;
-    }
-
-    private boolean canTraverse(EdgeFactory edge, RoutingAlgorithm ra, TravelType tt) {
-        boolean isBidirectional = ra.isBidirectional();
-    
-        // Check if the edge allows travel type in both forward and backward directions
-        boolean canTraverseForward = edge.allowsTravelType(tt, Direction.FORWARD);
-        boolean canTraverseBackward = edge.allowsTravelType(tt, Direction.BACKWARD);
-    
-        // If routing algorithm is bidirectional, retain edges that can be traversed in either direction
-        if (isBidirectional) {
-            return canTraverseForward || canTraverseBackward;
-        } else {
-            // Otherwise, only allow traversal in the forward direction
-            return canTraverseForward;
+        for (Node node : nodes.values()) {
+            for (int i = 0; i < node.numEdges(); ) {
+                Edge edge = node.getEdge(i);
+                if (edgesToRemove.contains(edge)) {
+                    node.removeEdge(i);
+                } else {
+                    i++;
+                }
+            }
         }
+        return removed;
     }
     
 
